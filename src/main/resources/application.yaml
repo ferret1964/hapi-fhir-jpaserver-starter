@@ -1,4 +1,18 @@
+#Adds the option to go to eg. http://localhost:8080/actuator/health for seeing the running configuration
+#see https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health"
 spring:
+  main:
+    allow-circular-references: true
+    #allow-bean-definition-overriding: true
+  flyway:
+    enabled: false
+    check-location: false
+    baselineOnMigrate: true
   datasource:
     #url: 'jdbc:h2:file:./target/database/h2'
     url: 'jdbc:mysql://127.0.0.1:3306/hapi'
@@ -41,6 +55,8 @@ spring:
       enabled: false
 hapi:
   fhir:
+    ### This enables the swagger-ui at /fhir/swagger-ui/index.html as well as the /fhir/api-docs (see https://hapifhir.io/hapi-fhir/docs/server_plain/openapi.html)
+    openapi_enabled: true
     ### This is the FHIR version. Choose between, DSTU2, DSTU3, R4 or R5
     fhir_version: R4
 ### enable to use the ApacheProxyAddressStrategy which uses X-Forwarded-* headers
@@ -102,6 +118,10 @@ hapi:
     search-coord-max-pool-size: 100
     search-coord-queue-capacity: 200
 
+    # Threadpool size for BATCH'ed GETs in a bundle.
+#    bundle_batch_pool_size: 10
+#    bundle_batch_pool_max_size: 50
+
 #    logger:
 #      error_format: 'ERROR - ${requestVerb} ${requestUrl}'
 #      format: >-
@@ -116,16 +136,16 @@ hapi:
 #    retain_cached_searches_mins: 60
 #    reuse_cached_search_results_millis: 60000
     tester:
-        home:
-          name: Local Tester
-          server_address: 'http://localhost:8080/fhir'
-          refuse_to_fetch_third_party_urls: false
-          fhir_version: R4
-        global:
-          name: Global Tester
-          server_address: "http://hapi.fhir.org/baseR4"
-          refuse_to_fetch_third_party_urls: false
-          fhir_version: R4
+      home:
+        name: Local Tester
+        server_address: 'http://localhost:8080/fhir'
+        refuse_to_fetch_third_party_urls: false
+        fhir_version: R4
+      global:
+        name: Global Tester
+        server_address: "http://hapi.fhir.org/baseR4"
+        refuse_to_fetch_third_party_urls: false
+        fhir_version: R4
 #    validation:
 #      requests_enabled: true
 #      responses_enabled: true
@@ -136,7 +156,7 @@ hapi:
     binary_storage_enabled: true
     bulk_export_enabled: true
 #    subscription:
-#      resthook_enabled: false
+#      resthook_enabled: true
 #      websocket_enabled: false
 #      email:
 #        from: some@test.com
@@ -148,7 +168,8 @@ hapi:
 #        startTlsEnable:
 #        startTlsRequired:
 #        quitWait:
-    lastn_enabled: true
+#    lastn_enabled: true
+#    store_resource_in_lucene_index_enabled: true
 ###  This is configuration for normalized quantity serach level default is 0
 ###   0: NORMALIZED_QUANTITY_SEARCH_NOT_SUPPORTED - default
 ###   1: NORMALIZED_QUANTITY_STORAGE_SUPPORTED
